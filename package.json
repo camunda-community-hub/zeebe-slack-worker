@@ -1,0 +1,38 @@
+{
+  "name": "zeebe-slack-worker",
+  "version": "1.0.0",
+  "description": "A reusable Slack message task worker for Zeebe",
+  "main": "dst/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jwulf/zeebe-slack-worker.git"
+  },
+  "jest": {
+    "preset": "ts-jest"
+  },
+  "keywords": [
+    "Zeebe",
+    "Slack"
+  ],
+  "author": "Josh Wulf <josh@magikcraft.io>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jwulf/zeebe-slack-worker/issues"
+  },
+  "homepage": "https://github.com/jwulf/zeebe-slack-worker#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "micromustache": "^6.1.1",
+    "zeebe-node": "^0.21.2"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.21",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.7.0-beta"
+  }
+}

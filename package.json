@@ -2,7 +2,7 @@
   "name": "zeebe-slack-worker",
   "version": "1.0.0",
   "description": "A reusable Slack message task worker for Zeebe",
-  "main": "dst/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "test": "jest"

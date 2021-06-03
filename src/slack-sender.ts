@@ -5,7 +5,7 @@ import { SlackProfileList, SlackTaskHeaders, SlackProfile } from ".";
 
 const isSlackProfileList = (
   slackProfiles: SlackProfile | SlackProfileList
-): slackProfiles is SlackProfileList => slackProfiles.webhook != undefined;
+): slackProfiles is SlackProfileList => slackProfiles.defaultChannel === undefined || slackProfiles.webhook === undefined;
 
 export class SlackSender {
   logger: any;

@@ -1,4 +1,4 @@
-import { ZBClient, ZBClientOptions, Job, CompleteFn } from "zeebe-node";
+import { ZBClient, ZBClientOptions, ZeebeJob } from "zeebe-node";
 import { SlackSender } from "./slack-sender";
 
 export interface SlackTaskHeaders {
@@ -36,12 +36,11 @@ export class SlackWorker {
     this.zbc = new ZBClient(ZBConfig);
 
     const slackSender = new SlackSender(SlackProfiles, Logger);
-    this.zbc.createWorker(
-      null,
-      "slack:message",
-      (job: Job<any, SlackTaskHeaders>, complete: CompleteFn<any>) =>
-        slackSender.sendSlackMessage(job, complete)
-    );
+    this.zbc.createWorker({
+      taskHandler: (job: ZeebeJob<any, SlackTaskHeaders>) =>
+        slackSender.sendSlackMessage(job),
+      taskType: "slack:message",
+    });
   }
 
   close() {

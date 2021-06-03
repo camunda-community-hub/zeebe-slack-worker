@@ -1,4 +1,4 @@
-import { Job, CompleteFn } from "zeebe-node";
+import { ZeebeJob } from "zeebe-node";
 import Axios from "axios";
 import * as micromustache from "micromustache";
 import { SlackProfileList, SlackTaskHeaders, SlackProfile } from ".";
@@ -18,14 +18,13 @@ export class SlackSender {
     this.slackProfiles = isSlackProfileList(slackProfiles)
       ? slackProfiles
       : {
-          default: slackProfiles
-        };
+        default: slackProfiles
+      };
   }
 
   async sendSlackMessage(
-    job: Job<any, SlackTaskHeaders>,
-    complete: CompleteFn<any>
-  ) {
+    job: ZeebeJob<any, SlackTaskHeaders>,
+  ): Promise<"JOB_ACTION_ACKNOWLEDGEMENT"> {
     const { variables, customHeaders } = job;
 
     const getConfig = (key: keyof SlackTaskHeaders) =>
@@ -34,7 +33,7 @@ export class SlackSender {
     const profileRequested = getConfig("slack:profile") || "default";
     const profile: SlackProfile = this.slackProfiles[profileRequested];
     if (!profile) {
-      return complete.failure(`Slack config ${profile} not found`);
+      return job.fail(`Slack config ${profile} not found`);
     }
 
     const messageTemplate =
@@ -42,7 +41,7 @@ export class SlackSender {
       profile?.templates?.[getConfig("slack:template")];
 
     if (!messageTemplate) {
-      return complete.success();
+      return job.complete();
     }
 
     let channel =
@@ -57,20 +56,21 @@ export class SlackSender {
     const text = micromustache.render(messageTemplate, variables);
 
     this.logger.info(`Sending "${text}" to ${channel}`, "Slack Worker");
-    Axios.post(webhook, {
+    return Axios.post(webhook, {
       channel,
       text,
       icon_emoji: iconEmoji
     })
-      .then(res => {
+      .then(res =>
         // Remove the message and template vars to prevent them overriding headers in future tasks
-        complete.success({
+        job.complete({
           "slack:message": undefined,
           "slack:template": undefined
-        });
-        return res;
-      })
-      .catch(e => this.logError(e));
+        }))
+      .catch(e => {
+        this.logError(e);
+        return job.fail(e.toString())
+      });
   }
 
   private logError(e: any) {

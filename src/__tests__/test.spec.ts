@@ -1,7 +1,7 @@
 import { singleSlackProfile, slackProfiles } from "./config";
 
 import * as http from "./http";
-import { SlackSender } from "../src/slack-sender";
+import { SlackSender } from "../slack-sender";
 import { Server } from "http";
 
 describe("SlackSender", () => {

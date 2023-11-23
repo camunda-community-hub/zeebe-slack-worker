@@ -33,6 +33,6 @@
     "@types/jest": "^24.0.21",
     "jest": "^24.9.0",
     "ts-jest": "^27.0.2",
-    "typescript": "^3.7.0-beta"
+    "typescript": "^5.0.0"
   }
 }
